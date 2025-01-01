@@ -36,6 +36,7 @@ import { AppModule } from "../src/app.module";
 import { INestApplication } from "@nestjs/common";
 
 import { execSync } from "child_process";
+import { env } from "process";
 
 
 let prismaClient: PrismaClient;
@@ -57,16 +58,13 @@ describe("AppController (e2e)", () => {
       log: ["query"],
     });
 
-    prismaClient.$connect();
+    // prismaClient.$connect();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    execSync("npm",
-      {
-        env: { DATABASE_URL: connectionURI },
-      });
+    execSync("npx prisma db push", { env: { ...process.env, DATABASE_URL: connectionURI } });
 
     // In beforeAll:
     // await exec(`db push`, {
